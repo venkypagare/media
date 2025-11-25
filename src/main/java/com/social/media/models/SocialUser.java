@@ -17,14 +17,21 @@ public class SocialUser {
     private Long id;
 
     // Non owning side should make use of this mappedBy method
-    @OneToOne(mappedBy = "socialUser", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "socialUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 //    @JoinColumn(name = "social_profile_id")
     private SocialProfile socialProfile;
 
-    @OneToMany(mappedBy = "socialUser")
+    // CascadeType means: When you save/update/delete a parent entity, JPA automatically performs the same action on its
+    // related child entities.
+    // FetchType plays an important role in defining how and when related entities are loaded from the database in
+    // relation to the parent entity
+    // FetchType.LAZY: ➡️ Loads the related data only when you access it — saves memory and improves performance.
+    // FetchType.EAGER: ➡️ Loads the related data immediately with the main entity — even if you don’t need it.
+    // Default Fetch Types: Lazy for OneToMany, ManyToMany and Eager for ManyToOne, OneToOne
+    @OneToMany(mappedBy = "socialUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Post>posts = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_group",
             joinColumns = @JoinColumn(name = "user_id"),

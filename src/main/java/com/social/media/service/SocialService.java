@@ -19,4 +19,11 @@ public class SocialService {
     public SocialUser saveUser(SocialUser socialUser) {
         return socialUserRepository.save(socialUser);
     }
+
+    public void deleteUser(Long id) {
+        SocialUser socialUser = socialUserRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("User with id " + id + " not found")
+        );
+        socialUserRepository.delete(socialUser);
+    }
 }
